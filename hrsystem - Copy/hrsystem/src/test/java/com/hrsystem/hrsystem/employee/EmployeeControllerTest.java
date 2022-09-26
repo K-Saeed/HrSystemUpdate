@@ -70,7 +70,7 @@ public class EmployeeControllerTest {
     @Test
     @DatabaseSetup("/dataset/employeesaver/datasetOfSaveEmployee.xml")
     @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT,value = "/dataset/employeesaver/expected.xml")
-    public void employeeAdderTest() throws Exception {
+    public void testEmployeeAdder() throws Exception {
         Department department = new Department( 1, "ed" );
         Team team = new Team( 1, "team" );
         LocalDate date =  LocalDate.of (1999,8,01);
@@ -93,7 +93,7 @@ public class EmployeeControllerTest {
 
     @Test
     @DatabaseSetup("/dataset/employeefinder/datasetOfFindEmployee.xml")
-    void employeeFinderTest () throws Exception {
+    void testEmployeeFinder () throws Exception {
         mockMvc.perform( MockMvcRequestBuilders.get("/employee/1").accept( MediaType.APPLICATION_JSON) )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fname").value("khaled"))
@@ -110,7 +110,7 @@ public class EmployeeControllerTest {
     @Test
     @DatabaseSetup("/dataset/employeeupdater/dataemployeeupdater.xml")
     @ExpectedDatabase(assertionMode= DatabaseAssertionMode.NON_STRICT,value = "/dataset/employeeupdater/expectedsalary.xml")
-    public void employeeUpdateTest() throws Exception {
+    public void testEmployeeUpdate() throws Exception {
         EmployeeUpdateCommand employeeUpdateCommand = new EmployeeUpdateCommand(15000);
         mockMvc.perform( MockMvcRequestBuilders.put( "/employee/update/1" ).accept( MediaType.APPLICATION_JSON )
                         .contentType( MediaType.APPLICATION_JSON )
@@ -128,7 +128,7 @@ public class EmployeeControllerTest {
     @Test
     @DatabaseSetup ("/dataset/employeesRelatedToManager/dataset.xml")
     @ExpectedDatabase (assertionMode = DatabaseAssertionMode.NON_STRICT , value = "/dataset/employeesRelatedToManager/expected.xml")
-    public void employessRelatedToManagerTest() throws Exception {
+    public void testEmployeesRelatedToManager() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders.get( "/employee/manager/10" ).accept( MediaType.APPLICATION_JSON )
                         .contentType( MediaType.APPLICATION_JSON ))
                 .andExpect(jsonPath("$.*", Matchers.isA(ArrayList.class))).
@@ -138,7 +138,7 @@ public class EmployeeControllerTest {
     @Transactional
     @DatabaseSetup ("/dataset/employeeRelatedToTeam/dataset.xml")
     @ExpectedDatabase (assertionMode = DatabaseAssertionMode.NON_STRICT , value = "/dataset/employeeRelatedToTeam/expected.xml")
-    public void employessRelatedToTeamTest() throws Exception {
+    public void testEmployeesRelatedToTeam() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders.get( "/employee/team/10").accept( MediaType.APPLICATION_JSON )
                         .contentType( MediaType.APPLICATION_JSON )).
                 andExpect(jsonPath("$.*", Matchers.isA(ArrayList.class))).
@@ -148,7 +148,7 @@ public class EmployeeControllerTest {
     @Test
     @DatabaseSetup ("/dataset/employeeDeleter/dataset.xml")
     @ExpectedDatabase (assertionMode= DatabaseAssertionMode.NON_STRICT,value ="/dataset/employeeDeleter/expected.xml")
-    public void employessDeleterTest() throws Exception {
+    public void testEmployeesDeleter() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders.delete( "/employee/employee/2").accept( MediaType.APPLICATION_JSON )
                         .contentType( MediaType.APPLICATION_JSON )).
                 andExpect(status().isOk());
@@ -157,14 +157,14 @@ public class EmployeeControllerTest {
     @Test
     @DatabaseSetup ("/dataset/employeeDeleter/dataset2.xml")
     @ExpectedDatabase (assertionMode= DatabaseAssertionMode.NON_STRICT,value ="/dataset/employeeDeleter/expected.xml")
-    public void employessDeleterTest2() throws Exception {
+    public void testEmployeesDeleter2() throws Exception {
         Assert.assertThrows(org.springframework.web.util.NestedServletException.class,
                 () -> mockMvc.perform( MockMvcRequestBuilders.delete("/employee/employee/20")));
     }
 
     @Test
     @DatabaseSetup("/dataset/employeeSalary/dataset.xml")
-    public void employeSalaryGetterTest () throws  Exception {
+    public void testEmployeeSalaryGetter () throws  Exception {
         mockMvc.perform( MockMvcRequestBuilders.get( "/employee/salary/1").accept( MediaType.APPLICATION_JSON )
                         .contentType( MediaType.APPLICATION_JSON )).
                 andExpect(status().isOk())
@@ -175,7 +175,7 @@ public class EmployeeControllerTest {
     @DatabaseSetup ("/dataset/employeesRelatedToManager/dataset.xml")
     @ExpectedDatabase (assertionMode = DatabaseAssertionMode.NON_STRICT ,
             value = "/dataset/employeesRelatedToManager/expected.xml")
-    public void allEmployeesHierarchicalTest () throws Exception {
+    public void testAllEmployeesHierarchical () throws Exception {
         mockMvc.perform( MockMvcRequestBuilders.get( "/employee/manager/hierarchical/10" ).accept( MediaType.APPLICATION_JSON )
                         .contentType( MediaType.APPLICATION_JSON ))
                 .andExpect(jsonPath("$.*", Matchers.isA(ArrayList.class))).

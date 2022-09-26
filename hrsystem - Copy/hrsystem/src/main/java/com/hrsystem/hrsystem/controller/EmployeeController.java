@@ -21,39 +21,39 @@ public class EmployeeController {
 
     @PostMapping (value = "/add")
     public @ResponseBody EmployeeDto addNewEmployee (@RequestBody EmployeeCommand employeeCommand) throws Exception {
-        return employeeService.newEmploueeCreater(employeeCommand);
+        return employeeService.createNewEmployee(employeeCommand);
     }
     @GetMapping  (value ="/{employeeid}")
     public @ResponseBody EmployeeDto findEmployeeByID (@PathVariable Integer employeeid) throws Exception {
-        return employeeService.EmployeeGeterByID(employeeid);
+        return employeeService.getEmployeeByID(employeeid);
     }
     @PutMapping (value = "/update/{employeeid}")
     public @ResponseBody EmployeeUpdateDto updateEmployee (@PathVariable  Integer employeeid , @RequestBody EmployeeUpdateCommand employeeUpdateCommand) throws Exception {
-        return employeeService.employeeUpdater(employeeid,employeeUpdateCommand);
+        return employeeService.updateEmployee(employeeid,employeeUpdateCommand);
     }
 
     @GetMapping (value = "/manager/{managerid}")
     public  @ResponseBody List <EmployeeFindAllDto>  getEmployeesByManagerid (@PathVariable Integer managerid) throws Exception {
-        return employeeService.allEmployeesRelatedToOneManager(managerid);
+        return employeeService.getAllEmployeesRelatedToOneManager(managerid);
     }
 
     @GetMapping (value = "/team/{teamid}")
     public  @ResponseBody List<EmployeeFindAllDto> getEmployeesByTeamid(@PathVariable Integer teamid) throws Exception {
-        return employeeService.employeesGeterByTeamid(teamid);
+        return employeeService.getEmployeesByTeamid(teamid);
     }
 
     @GetMapping (value = "/salary/{employeeid}")
     public EmployeeSalaryDto getEmployeeNetSalary(@PathVariable Integer employeeid) throws Exception {
-        return employeeService.employeeGetNetSalary(employeeid);
+        return employeeService.getEmployeeNetSalary(employeeid);
     }
 
     @DeleteMapping (value =  "/employee/{employeeid}")
     public String EmployeeDelterByID( @PathVariable Integer employeeid) throws Exception {
-        return employeeService.EmployeeDelterByID(employeeid);
+        return employeeService.deleteEmployeeByID(employeeid);
     }
     @GetMapping (value ="/manager/hierarchical/{managerid}")
     public  @ResponseBody List <EmployeeFindAllDto>  allEmployeesHierarchical (@PathVariable Integer managerid) throws Exception {
-        return employeeService.allEmployeesHierarchical(managerid);
+        return employeeService.getAllEmployeesHierarchical(managerid);
     }
 
 }

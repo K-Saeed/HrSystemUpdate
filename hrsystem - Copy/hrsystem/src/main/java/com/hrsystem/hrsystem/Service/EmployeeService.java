@@ -12,7 +12,7 @@ import com.hrsystem.hrsystem.entity.dto.EmployeeUpdateDto;
 import com.hrsystem.hrsystem.repostiory.DepartmentRepository;
 import com.hrsystem.hrsystem.repostiory.EmployeeRepository;
 import com.hrsystem.hrsystem.repostiory.TeamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,21 +20,19 @@ import java.util.List;
 
 
 @Service
+@AllArgsConstructor
 public class EmployeeService {
-    @Autowired
+
     private EmployeeRepository employeeRepository;
-    @Autowired
     private DepartmentRepository departmentRepository;
-    @Autowired
     private TeamRepository teamRepository;
+    private EmployeeMapper employeeMapper;
 
-    @Autowired
-    EmployeeMapper employeeMapper;
 
-    public EmployeeDto newEmploueeCreater(EmployeeCommand employeeCommand) throws Exception {
-       /* EmployeeService employeeService = new EmployeeService();
-        Boolean checker = employeeService.employeeHasNotManagerChecker();*/
-        //if ( checker== false) {
+
+    public EmployeeDto createNewEmployee(EmployeeCommand employeeCommand) throws Exception {
+       Boolean checker = this.getEmployeeHasNotManagerChecker();
+       if ( checker== false) {
             Integer managerId = employeeCommand.getManagerId();
             Employee employee = employeeMapper.employeeComandConvertToEntity( employeeCommand );
             employee = employeeRepository.save( employee );
@@ -43,11 +41,11 @@ public class EmployeeService {
             employee.setEmployees( list );
             EmployeeDto employeeDto = employeeMapper.employeeConvertToEmployeeDto( employee, employeeCommand );
             return employeeDto;
-//        /*}else
-//            throw new Exception("Manager can't be null");
+       }else
+           throw new Exception("Manager can't be null");
     }
 
-    public EmployeeDto EmployeeGeterByID(Integer id) throws Exception {
+    public EmployeeDto getEmployeeByID(Integer id) throws Exception {
        if (employeeRepository.findById(id).get()!=null) {
            Employee employee =employeeRepository.findById(id).get();
            EmployeeDto employeeDto = employeeMapper.employeeEntityConvertToDto(employee );
@@ -56,7 +54,7 @@ public class EmployeeService {
        throw  new Exception( "id: "+id );
     }
 
-    public EmployeeUpdateDto employeeUpdater(Integer id, EmployeeUpdateCommand employeeUpdateCommand) throws Exception {
+    public EmployeeUpdateDto updateEmployee(Integer id, EmployeeUpdateCommand employeeUpdateCommand) throws Exception {
         if (employeeRepository.findById(id).get() != null){
             Employee employee = employeeRepository.findById(id).get();
             employee.setGrossSallary(employeeUpdateCommand.getGrossSalary());
@@ -68,7 +66,7 @@ public class EmployeeService {
         throw new Exception("Id Not Found : "+ id);
     }
 
-    public List<EmployeeFindAllDto> allEmployeesRelatedToOneManager(Integer managerid) throws Exception {
+    public List<EmployeeFindAllDto> getAllEmployeesRelatedToOneManager(Integer managerid) throws Exception {
         if (employeeRepository.findById( managerid ).get()!= null) {
             Employee manager = employeeRepository.findById( managerid ).get();
 
@@ -83,7 +81,7 @@ public class EmployeeService {
             throw new Exception( "Id Not Found : " +managerid);
     }
 
-    public List<EmployeeFindAllDto> employeesGeterByTeamid(Integer teamid) throws Exception {
+    public List<EmployeeFindAllDto> getEmployeesByTeamid(Integer teamid) throws Exception {
         if (teamRepository.findById(teamid).get() !=null) {
             Team team = teamRepository.findById(teamid).get();
             List<Employee> employees = team.getEmployees();
@@ -96,7 +94,7 @@ public class EmployeeService {
             throw new  Exception( "Id Not Found : "+teamid );
     }
 
-    public EmployeeSalaryDto employeeGetNetSalary(Integer employeeid) throws Exception {
+    public EmployeeSalaryDto getEmployeeNetSalary(Integer employeeid) throws Exception {
         Employee employee = employeeRepository.findById( employeeid ).get();
         if (employee!=null) {
             Integer grossSalary = employee.getGrossSallary();
@@ -110,7 +108,7 @@ public class EmployeeService {
             throw new Exception("Id Not Found : "+employeeid );
     }
 
-    public String EmployeeDelterByID(Integer employeeid) throws Exception {
+    public String deleteEmployeeByID(Integer employeeid) throws Exception {
         Employee employee = employeeRepository.findById( employeeid ).get();
         if (employee!=null) {
             Employee manager = employee.getManager();
@@ -134,7 +132,7 @@ public class EmployeeService {
         }else throw new Exception("Id Not Found : " + employeeid);
     }
 
-    public List<EmployeeFindAllDto> allEmployeesHierarchical (Integer managerid) throws Exception {
+    public List<EmployeeFindAllDto> getAllEmployeesHierarchical(Integer managerid) throws Exception {
         Employee manager = employeeRepository.findById( managerid ).get();
         List<Employee> employees = new ArrayList<>();
         if (manager == null) {
@@ -156,9 +154,9 @@ public class EmployeeService {
                 getAllEmployees( employees.get( i ), employees );
             }
     }
-    public Boolean employeeHasNotManagerChecker () throws Exception{
-        if (employeeRepository.searchAllEmployees() != null) {
-            List <Employee> employees = employeeRepository.searchAllEmployees();
+    public Boolean getEmployeeHasNotManagerChecker() throws Exception{
+        if (employeeRepository.getAllEmployees() != null) {
+            List <Employee> employees = employeeRepository.getAllEmployees();
             if (employees.size() >= 2) {
                 return true;
             }else
