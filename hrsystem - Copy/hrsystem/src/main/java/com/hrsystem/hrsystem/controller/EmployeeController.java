@@ -20,7 +20,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping (value = "/add")
-    public @ResponseBody EmployeeDto addNewEmployee (@RequestBody EmployeeCommand employeeCommand) {
+    public @ResponseBody EmployeeDto addNewEmployee (@RequestBody EmployeeCommand employeeCommand) throws Exception {
         return employeeService.newEmploueeCreater(employeeCommand);
     }
     @GetMapping  (value ="/{employeeid}")
@@ -50,6 +50,10 @@ public class EmployeeController {
     @DeleteMapping (value =  "/employee/{employeeid}")
     public String EmployeeDelterByID( @PathVariable Integer employeeid) throws Exception {
         return employeeService.EmployeeDelterByID(employeeid);
+    }
+    @GetMapping (value ="/manager/hierarchical/{managerid}")
+    public  @ResponseBody List <EmployeeFindAllDto>  allEmployeesHierarchical (@PathVariable Integer managerid) throws Exception {
+        return employeeService.allEmployeesHierarchical(managerid);
     }
 
 }

@@ -31,8 +31,11 @@ public class EmployeeService {
     @Autowired
     EmployeeMapper employeeMapper;
 
-    public EmployeeDto newEmploueeCreater(EmployeeCommand employeeCommand) {
-        Integer managerId = employeeCommand.getManagerId();
+    public EmployeeDto newEmploueeCreater(EmployeeCommand employeeCommand) throws Exception {
+       /* EmployeeService employeeService = new EmployeeService();
+        Boolean checker = employeeService.employeeHasNotManagerChecker();*/
+        //if ( checker== false) {
+            Integer managerId = employeeCommand.getManagerId();
             Employee employee = employeeMapper.employeeComandConvertToEntity( employeeCommand );
             employee = employeeRepository.save( employee );
             List<Employee> list = new ArrayList<>();
@@ -40,7 +43,9 @@ public class EmployeeService {
             employee.setEmployees( list );
             EmployeeDto employeeDto = employeeMapper.employeeConvertToEmployeeDto( employee, employeeCommand );
             return employeeDto;
-        }
+//        /*}else
+//            throw new Exception("Manager can't be null");
+    }
 
     public EmployeeDto EmployeeGeterByID(Integer id) throws Exception {
        if (employeeRepository.findById(id).get()!=null) {
@@ -129,4 +134,36 @@ public class EmployeeService {
         }else throw new Exception("Id Not Found : " + employeeid);
     }
 
+    public List<EmployeeFindAllDto> allEmployeesHierarchical (Integer managerid) throws Exception {
+        Employee manager = employeeRepository.findById( managerid ).get();
+        List<Employee> employees = new ArrayList<>();
+        if (manager == null) {
+            throw new Exception();
+        }
+        getAllEmployees(manager, employees);
+        List <EmployeeFindAllDto> employeeFindAllDtos = new ArrayList<>();
+        for (int i = 0; i < employees.size(); i++) {
+            employeeFindAllDtos.add( employeeMapper.employeeConvertToEmployeeDto( employees.get( i ) ) );
+        }
+        return employeeFindAllDtos;
+    }
+
+    public void getAllEmployees(Employee manager, List<Employee> employees) {
+        if (manager.getEmployees()  == null || manager.getEmployees().size() == 0)
+            return;
+            employees.addAll( manager.getEmployees() );
+            for (int i = 0; i < employees.size(); i++) {
+                getAllEmployees( employees.get( i ), employees );
+            }
+    }
+    public Boolean employeeHasNotManagerChecker () throws Exception{
+        if (employeeRepository.searchAllEmployees() != null) {
+            List <Employee> employees = employeeRepository.searchAllEmployees();
+            if (employees.size() >= 2) {
+                return true;
+            }else
+                return false ;
+        }else
+            throw new Exception();
+    }
 }
