@@ -1,12 +1,9 @@
 package com.hrsystem.hrsystem.Service.mapper;
 
-import com.hrsystem.hrsystem.entity.Department;
-import com.hrsystem.hrsystem.entity.Employee;
-import com.hrsystem.hrsystem.entity.EmployeeFindAllDto;
-import com.hrsystem.hrsystem.entity.Team;
+import com.hrsystem.hrsystem.entity.*;
 import com.hrsystem.hrsystem.entity.command.EmployeeCommand;
-import com.hrsystem.hrsystem.entity.dto.EmployeeDto;
-import com.hrsystem.hrsystem.entity.dto.EmployeeUpdateDto;
+import com.hrsystem.hrsystem.entity.command.InsuranceCommand;
+import com.hrsystem.hrsystem.entity.dto.*;
 import com.hrsystem.hrsystem.repostiory.DepartmentRepository;
 import com.hrsystem.hrsystem.repostiory.EmployeeRepository;
 import com.hrsystem.hrsystem.repostiory.TeamRepository;
@@ -72,4 +69,29 @@ public class EmployeeMapper {
         employeeUpdateDto.setGrossSalary( employee.getGrossSallary() );
         return employeeUpdateDto;
     }
+
+    public SalaryDto convertSalaryEntityToDto(Salary salary) {
+        SalaryDto salaryDto = modelMapper.map(salary,SalaryDto.class);
+        return salaryDto ;
+    }
+
+    public LeavesEmployeeDto convertEmployeeToLeavesDto(Employee employee) {
+        return modelMapper.map(employee, LeavesEmployeeDto.class);
+    }
+
+    public Insurance convertInsuranceCommandToEntity(InsuranceCommand insuranceCommand) {
+        Insurance insurance =modelMapper.map(insuranceCommand,Insurance.class);
+        Integer id = insuranceCommand.getEmployeeId();
+        Employee employee = employeeRepository.findById(id).get();
+        insurance.setEmployee(employee);
+        return insurance ;
+    }
+
+    public InsuranceDto convertInsuranceEntitToDto(Insurance insurance) {
+        InsuranceDto insuranceDto = modelMapper.map(insurance,InsuranceDto.class);
+        Employee employee = insurance.getEmployee();
+        insuranceDto.setEmployeeId(employee.getId());
+        return insuranceDto;
+    }
+
 }

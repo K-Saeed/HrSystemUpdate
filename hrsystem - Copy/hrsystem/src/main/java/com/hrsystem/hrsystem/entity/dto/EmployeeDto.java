@@ -21,10 +21,11 @@ public class EmployeeDto {
     private LocalDate birthDate ;
     private LocalDate graduationDate ;
     private LocalDate startWorkDate ;
+    private Integer leaves;
 
     public EmployeeDto(String fname, String lname, int grossSallary, Integer departmentId, Integer nationalId,
                        Integer teamId, Integer managerId, List <EmployeeExperties> employeeExperties,
-                       LocalDate birthDate, LocalDate graduationDate, LocalDate startWorkDate) {
+                       LocalDate birthDate, LocalDate graduationDate, LocalDate startWorkDate , Integer leaves ) {
         this.fname=fname;
         this.lname=lname;
         this.grossSallary=grossSallary;
@@ -36,6 +37,15 @@ public class EmployeeDto {
         this.birthDate = birthDate;
         this.graduationDate = graduationDate;
         this.startWorkDate = startWorkDate;
+        this.leaves = leaves;
+    }
+
+    public Integer getLeaves() {
+        return leaves;
+    }
+
+    public void setLeaves(Integer leaves) {
+        this.leaves = leaves;
     }
 
     public void setFname(String fname) {

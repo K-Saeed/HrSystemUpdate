@@ -17,7 +17,10 @@ public class Employee {
     private LocalDate birthDate;
     private LocalDate graduationDate;
     private LocalDate startWorkDate;
-    private Integer grossSallary;
+    private Double grossSallary;
+    private Integer leaves;
+    //private Gender gender;
+  //  private Degree degree ;
     @ManyToOne
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
@@ -35,12 +38,17 @@ public class Employee {
     @JoinColumn(name = "id")
     private List<EmployeeExperties> employeeExperties;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id")
+    private List<Salary>salary;
+
+
     public Employee() {
     }
 
-    public Employee(String fname, String lname, Integer nationalid, Integer grossSallary,
-                    Team team, Department department, Employee managerId,
-                    List<EmployeeExperties> employeeExperties, LocalDate birthDate, LocalDate graduationDate, LocalDate startWorkDate) {
+    public Employee(String fname, String lname, Integer nationalid, Double grossSallary,
+                    Team team, Department department, Employee managerId, List<EmployeeExperties> employeeExperties,
+                    LocalDate birthDate, LocalDate graduationDate, LocalDate startWorkDate, Integer leaves) {
         this.fname = fname;
         this.lname = lname;
         this.nationalid = nationalid;
@@ -52,6 +60,9 @@ public class Employee {
         this.birthDate = birthDate;
         this.graduationDate = graduationDate;
         this.startWorkDate = startWorkDate;
+      //  this.gender = gender;
+       // this.degree = degree;
+        this.leaves = leaves;
     }
 
     public Integer getNationalid() {
@@ -90,11 +101,11 @@ public class Employee {
         this.department = department;
     }
 
-    public void setGrossSallary(Integer grossSallary) {
+    public void setGrossSallary(Double grossSallary) {
         this.grossSallary = grossSallary;
     }
 
-    public Integer getGrossSallary() {
+    public Double getGrossSallary() {
         return grossSallary;
     }
 
@@ -130,6 +141,15 @@ public class Employee {
         this.employeeExperties = employeeExperties;
     }
 
+//    public Gender getGender() {
+//        return gender;
+//    }
+//
+//    public void se
+//    tGender(Gender gender) {
+//        this.gender = gender;
+//    }
+
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -153,4 +173,28 @@ public class Employee {
     public void setStartWorkDate(LocalDate startWorkDate) {
         this.startWorkDate = startWorkDate;
     }
+
+    public List<Salary> getSalary() {
+        return salary;
+    }
+
+    public void setSalary(List<Salary> salary) {
+        this.salary = salary;
+    }
+
+    public Integer getLeaves() {
+        return leaves;
+    }
+
+    public void setLeaves(Integer leaves) {
+        this.leaves = leaves;
+    }
+
+//    public Degree getDegree() {
+//        return degree;
+//    }
+//
+//    public void setDegree(Degree degree) {
+//        this.degree = degree;
+//    }
 }

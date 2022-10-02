@@ -11,4 +11,10 @@ import java.util.List;
 public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
     @Query("SELECT e FROM Employee e WHERE e.manager.id is null")
     List<Employee> getAllEmployees();
+
+//   @Query(value = "SELECT e.id , e.fName ,e.manager.id FROM Employee e JOIN Employee on e.id=e.manager.id ")
+//   List<Employee> getAllEmployeesHi();
+
+
+
 }

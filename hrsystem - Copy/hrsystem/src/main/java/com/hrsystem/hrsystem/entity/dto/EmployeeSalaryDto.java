@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class EmployeeSalaryDto {
     private Integer employeeid ;
-    private Integer grossSalary ;
+    private Double grossSalary ;
     private Double netSalary ;
 
     public EmployeeSalaryDto () {
 
     }
-    public EmployeeSalaryDto (Integer employeeid , Integer grossSalary , Double netSalary) {
+    public EmployeeSalaryDto (Integer employeeid , Double grossSalary , Double netSalary) {
         this.employeeid=employeeid;
         this.grossSalary=grossSalary;
         this.netSalary=netSalary;
@@ -19,11 +19,11 @@ public class EmployeeSalaryDto {
     }
 
 
-    public void setGrossSalary(Integer grossSalary) {
+    public void setGrossSalary(Double grossSalary) {
         this.grossSalary = grossSalary;
     }
 
-    public Integer getGrossSalary() {
+    public Double getGrossSalary() {
         return grossSalary;
     }
 

@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class EmployeeUpdateCommand {
-    private Integer grossSalary;
+    private Double grossSalary;
 
-    public EmployeeUpdateCommand(Integer grossSalary) {
+    public EmployeeUpdateCommand(Double grossSalary) {
         this.grossSalary = grossSalary;
     }
 
@@ -14,11 +14,11 @@ public class EmployeeUpdateCommand {
 
     }
 
-    public Integer getGrossSalary() {
+    public Double getGrossSalary() {
         return grossSalary;
     }
 
-    public void setGrossSalary(Integer grossSalary) {
+    public void setGrossSalary(Double grossSalary) {
         this.grossSalary = grossSalary;
     }
 }

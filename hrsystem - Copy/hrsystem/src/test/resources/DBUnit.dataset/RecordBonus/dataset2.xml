@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <DEPARTMENT id="1" dname="software"  />
+    <TEAM id="1" tname="hr" />
+    <EMPLOYEE id ="20" fName="khaled" lName="saeed"   nationalId="2021456" birth_Date="1996-08-01"
+              graduation_Date="2020-09-01" start_Work_Date="2022-09-01"  gross_Sallary="10000" leaves="15" department_Id="1" team_Id="1" />
+</dataset>

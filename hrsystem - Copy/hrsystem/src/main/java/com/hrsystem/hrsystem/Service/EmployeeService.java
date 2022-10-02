@@ -9,10 +9,9 @@ import com.hrsystem.hrsystem.entity.command.EmployeeUpdateCommand;
 import com.hrsystem.hrsystem.entity.dto.EmployeeDto;
 import com.hrsystem.hrsystem.entity.dto.EmployeeSalaryDto;
 import com.hrsystem.hrsystem.entity.dto.EmployeeUpdateDto;
-import com.hrsystem.hrsystem.repostiory.DepartmentRepository;
-import com.hrsystem.hrsystem.repostiory.EmployeeRepository;
-import com.hrsystem.hrsystem.repostiory.TeamRepository;
+import com.hrsystem.hrsystem.repostiory.*;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,19 +20,21 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@EnableScheduling
 public class EmployeeService {
 
     private EmployeeRepository employeeRepository;
-    private DepartmentRepository departmentRepository;
     private TeamRepository teamRepository;
     private EmployeeMapper employeeMapper;
+    private SalaryRepository salaryRepository;
+    private InsuranceRepository insuranceRepository ;
+    private LeavesHistoryRepository leavesHistoryRepository;
 
 
 
     public EmployeeDto createNewEmployee(EmployeeCommand employeeCommand) throws Exception {
        Boolean checker = this.getEmployeeHasNotManagerChecker();
-       if ( checker== false) {
-            Integer managerId = employeeCommand.getManagerId();
+       if (!checker) {
             Employee employee = employeeMapper.employeeComandConvertToEntity( employeeCommand );
             employee = employeeRepository.save( employee );
             List<Employee> list = new ArrayList<>();
@@ -69,7 +70,6 @@ public class EmployeeService {
     public List<EmployeeFindAllDto> getAllEmployeesRelatedToOneManager(Integer managerid) throws Exception {
         if (employeeRepository.findById( managerid ).get()!= null) {
             Employee manager = employeeRepository.findById( managerid ).get();
-
             List<Employee> employees = manager.getEmployees();
             List<EmployeeFindAllDto> employeeFindAllDtos = new ArrayList<>();
             for (int i = 0; i < employees.size(); i++) {
@@ -97,7 +97,7 @@ public class EmployeeService {
     public EmployeeSalaryDto getEmployeeNetSalary(Integer employeeid) throws Exception {
         Employee employee = employeeRepository.findById( employeeid ).get();
         if (employee!=null) {
-            Integer grossSalary = employee.getGrossSallary();
+            Double grossSalary = employee.getGrossSallary();
             double netSalary = grossSalary - (grossSalary * .15) - 500;
             EmployeeSalaryDto employeeSalaryDto = new EmployeeSalaryDto();
             employeeSalaryDto.setEmployeeid( employeeid );
@@ -119,7 +119,7 @@ public class EmployeeService {
                         Employee em = employees.get( i );
                         em.setManager( manager );
                     }
-                    employeeRepository.delete( employee );
+                employeeRepository.delete( employee );
                     String msg = "The employee deleted";
                     return msg;
                 }else{
@@ -146,7 +146,7 @@ public class EmployeeService {
         return employeeFindAllDtos;
     }
 
-    public void getAllEmployees(Employee manager, List<Employee> employees) {
+    private void getAllEmployees(Employee manager, List<Employee> employees) {
         if (manager.getEmployees()  == null || manager.getEmployees().size() == 0)
             return;
             employees.addAll( manager.getEmployees() );
@@ -154,7 +154,7 @@ public class EmployeeService {
                 getAllEmployees( employees.get( i ), employees );
             }
     }
-    public Boolean getEmployeeHasNotManagerChecker() throws Exception{
+    private Boolean getEmployeeHasNotManagerChecker() throws Exception{
         if (employeeRepository.getAllEmployees() != null) {
             List <Employee> employees = employeeRepository.getAllEmployees();
             if (employees.size() >= 2) {
@@ -164,4 +164,5 @@ public class EmployeeService {
         }else
             throw new Exception();
     }
+
 }

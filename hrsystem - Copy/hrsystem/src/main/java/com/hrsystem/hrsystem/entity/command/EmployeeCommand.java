@@ -19,10 +19,13 @@ public class EmployeeCommand {
     private LocalDate birthDate ;
     private LocalDate graduationDate ;
     private LocalDate startWorkDate ;
+    private Integer leaves ;
+   // private Gender gender;
+   // private Degree degree ;
 
     public EmployeeCommand(String fname, String lname, int grossSallary, Integer departmentId, Integer nationalId,
                            Integer teamId, Integer managerId, List <EmployeeExperties> employeeExperties,
-                           LocalDate birthDate, LocalDate graduationDate, LocalDate startWorkDate) {
+                           LocalDate birthDate, LocalDate graduationDate, LocalDate startWorkDate , Integer leaves  ) {
         this.fname=fname;
         this.lname=lname;
         this.grossSallary=grossSallary;
@@ -34,6 +37,33 @@ public class EmployeeCommand {
         this.birthDate = birthDate;
         this.graduationDate = graduationDate;
         this.startWorkDate = startWorkDate;
+       // this.gender = gender;
+        //this.degree = degree;
+        this.leaves = leaves;
+    }
+
+//    public Gender getGender() {
+//        return gender;
+//    }
+//
+//    public void setGender(Gender gender) {
+//        this.gender = gender;
+//    }
+
+//    public Degree getDegree() {
+//        return degree;
+//    }
+//
+//    public void setDegree(Degree degree) {
+//        this.degree = degree;
+//    }
+
+    public Integer getLeaves() {
+        return leaves;
+    }
+
+    public void setLeaves(Integer leaves) {
+        this.leaves = leaves;
     }
 
     public Integer getNationalId() {
