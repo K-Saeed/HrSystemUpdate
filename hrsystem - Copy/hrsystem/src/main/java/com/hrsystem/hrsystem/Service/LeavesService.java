@@ -34,19 +34,18 @@ public class LeavesService {
         Integer newLeaves = leavesCommand.getLeaves();
         if (calcLeaves < employee.getLeaves()) {
             if ((calcLeaves + newLeaves) < employee.getLeaves()) {
-                newLeaves = newLeaves+calcLeaves;
-                LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee);
+                LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee,leavesCommand);
                 leavesHistoryRepository.save(leavesHistory);
-                return employeeMapper.convertLeavesToDto(leavesHistory);
+                return employeeMapper.convertLeavesToDto(leavesHistory,leavesCommand);
             } else {
                 Integer exceededLeaves = (calcLeaves + newLeaves) - employee.getLeaves();
                 Month month =Month.from(LocalDate.now());
                 if (salaryRepository.findByDate(month.getValue(),employeeid)==null) {
                     Salary salary = this.setSalary(employee,exceededLeaves);
                     salaryRepository.save(salary);
-                    LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee);
+                    LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee, leavesCommand);
                     leavesHistoryRepository.save(leavesHistory);
-                    return employeeMapper.convertLeavesToDto(leavesHistory);
+                    return employeeMapper.convertLeavesToDto(leavesHistory, leavesCommand);
                 }else {
                     Salary salary = salaryRepository.findByDate(month.getValue(), employeeid);
                     if (salary.getExceededLeaves()==null) {
@@ -54,18 +53,18 @@ public class LeavesService {
                         salary.setsDate(LocalDate.now());
                         salary.setExceededLeaves(exceededLeaves);
                         salaryRepository.save(salary);
-                        LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee);
+                        LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee, leavesCommand);
                         leavesHistoryRepository.save(leavesHistory);
-                        return employeeMapper.convertLeavesToDto(leavesHistory);
+                        return employeeMapper.convertLeavesToDto(leavesHistory, leavesCommand);
                     }else {
                         salary.setEmployee(employee);
                         salary.setsDate(LocalDate.now());
                         exceededLeaves =exceededLeaves+salary.getExceededLeaves();
                         salary.setExceededLeaves(exceededLeaves);
                         salaryRepository.save(salary);
-                        LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee);
+                        LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee, leavesCommand);
                         leavesHistoryRepository.save(leavesHistory);
-                        return employeeMapper.convertLeavesToDto(leavesHistory);
+                        return employeeMapper.convertLeavesToDto(leavesHistory, leavesCommand);
 
                     }
                 }
@@ -76,9 +75,9 @@ public class LeavesService {
             if (salaryRepository.findByDate(month.getValue(),employeeid)==null) {
                 Salary salary = this.setSalary(employee,newLeaves);
                 salaryRepository.save(salary);
-                LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee);
+                LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee, leavesCommand);
                 leavesHistoryRepository.save(leavesHistory);
-                return employeeMapper.convertLeavesToDto(leavesHistory);
+                return employeeMapper.convertLeavesToDto(leavesHistory, leavesCommand);
             }else {
                 Salary salary = salaryRepository.findByDate(month.getValue(), employeeid);
                 if (salary.getExceededLeaves() == null) {
@@ -86,9 +85,9 @@ public class LeavesService {
                     salary.setsDate(LocalDate.now());
                     salary.setExceededLeaves(newLeaves);
                     salaryRepository.save(salary);
-                    LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee);
+                    LeavesHistory leavesHistory = this.setLeavesHistory(newLeaves, employee, leavesCommand);
                     leavesHistoryRepository.save(leavesHistory);
-                    return employeeMapper.convertLeavesToDto(leavesHistory);
+                    return employeeMapper.convertLeavesToDto(leavesHistory, leavesCommand);
                 } else {
                     salary.setEmployee(employee);
                     salary.setsDate(LocalDate.now());
@@ -96,9 +95,9 @@ public class LeavesService {
                     exceededLeaves = exceededLeaves + newLeaves;
                     salary.setExceededLeaves(exceededLeaves);
                     salaryRepository.save(salary);
-                    LeavesHistory leavesHistory = this.setLeavesHistory(exceededLeaves, employee);
+                    LeavesHistory leavesHistory = this.setLeavesHistory(exceededLeaves, employee, leavesCommand);
                     leavesHistoryRepository.save(leavesHistory);
-                    return employeeMapper.convertLeavesToDto(leavesHistory);
+                    return employeeMapper.convertLeavesToDto(leavesHistory, leavesCommand);
 
                 }
             }
@@ -114,9 +113,9 @@ public class LeavesService {
         return salary;
     }
 
-    private LeavesHistory setLeavesHistory(Integer leaves, Employee employee) {
+    private LeavesHistory setLeavesHistory(Integer leaves, Employee employee, LeavesCommand leavesCommand) {
         LeavesHistory leavesHistory = new LeavesHistory();
-        leavesHistory.setlDate(LocalDate.now());
+        leavesHistory.setlDate(leavesCommand.getDate());
         leavesHistory.setEmployee(employee);
         leavesHistory.setLeaves(leaves);
         return leavesHistory;

@@ -23,7 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
+import java.time.LocalDate;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
@@ -46,40 +47,54 @@ public class LeaveHistoryControllerTest {
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT,
             value = "/DBUnit.dataset/EmployeeRecordLeaves/expected.xml")
     public void recordEmployeeLeaves () throws Exception {
-        LeavesCommand leavesCommand = new LeavesCommand (20);
+        LocalDate date =LocalDate.now();
+        LeavesCommand leavesCommand = new LeavesCommand (30,date);
         mockMvc.perform(MockMvcRequestBuilders.put("/leaves/record/20")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(leavesCommand)))
-                .andExpect(jsonPath("$.leaves").value(26));
+                .andExpect(jsonPath("$.exceedLeaves").value(30))
+                .andExpect(jsonPath("$.backToWorkDate").value("2022-11-15"));
     }
-
     @Test
     @DatabaseSetup("/DBUnit.dataset/EmployeeRecordLeaves/dataset2.xml")
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT,
             value = "/DBUnit.dataset/EmployeeRecordLeaves/expected2.xml")
     public void recordEmployeeLeaves2 () throws Exception {
-        LeavesCommand leavesCommand = new LeavesCommand (20);
+        LocalDate date =LocalDate.now();
+        LeavesCommand leavesCommand = new LeavesCommand (5,date);
         mockMvc.perform(MockMvcRequestBuilders.put("/leaves/record/20")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(leavesCommand)))
-                .andExpect(jsonPath("$.leaves").value(20));
+                .andExpect(jsonPath("$.leaves").value(5));
     }
     @Test
     @DatabaseSetup("/DBUnit.dataset/EmployeeRecordLeaves/dataset3.xml")
     @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT,
             value = "/DBUnit.dataset/EmployeeRecordLeaves/expected3.xml")
     public void recordEmployeeLeaves3 () throws Exception {
-        LeavesCommand leavesCommand = new LeavesCommand (20);
+        LocalDate date =LocalDate.now();
+        LeavesCommand leavesCommand = new LeavesCommand (5,date);
         mockMvc.perform(MockMvcRequestBuilders.put("/leaves/record/20")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(leavesCommand)))
-                .andExpect(jsonPath("$.leaves").value(25));
+                .andExpect(jsonPath("$.leaves").value(5));
     }
 
-
-
+    @Test
+    @DatabaseSetup("/DBUnit.dataset/EmployeeRecordLeaves/dataset4.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT,
+            value = "/DBUnit.dataset/EmployeeRecordLeaves/expected4.xml")
+    public void recordEmployeeLeaves4 () throws Exception {
+        LocalDate date =LocalDate.now();
+        LeavesCommand leavesCommand = new LeavesCommand (14,date);
+        mockMvc.perform(MockMvcRequestBuilders.put("/leaves/record/20")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(leavesCommand)))
+                .andExpect(jsonPath("$.leaves").value(14));
+    }
 
 }

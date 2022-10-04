@@ -2,6 +2,7 @@ package com.hrsystem.hrsystem.Service.mapper;
 
 import com.hrsystem.hrsystem.entity.*;
 import com.hrsystem.hrsystem.entity.command.EmployeeCommand;
+import com.hrsystem.hrsystem.entity.command.LeavesCommand;
 import com.hrsystem.hrsystem.entity.dto.EmployeeDto;
 import com.hrsystem.hrsystem.entity.dto.EmployeeUpdateDto;
 import com.hrsystem.hrsystem.entity.dto.LeavesEmployeeDto;
@@ -12,6 +13,9 @@ import com.hrsystem.hrsystem.repostiory.TeamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 @Service
 public class EmployeeMapper {
@@ -81,10 +85,28 @@ public class EmployeeMapper {
         return modelMapper.map(employee, LeavesEmployeeDto.class);
     }
 
-    public LeavesEmployeeDto convertLeavesToDto(LeavesHistory leavesHistory) {
+    public LeavesEmployeeDto convertLeavesToDto(LeavesHistory leavesHistory, LeavesCommand leavesCommand) {
         LeavesEmployeeDto leavesEmployeeDto = new LeavesEmployeeDto();
-        leavesEmployeeDto.setLeaves(leavesHistory.getLeaves());
+        leavesEmployeeDto.setLeaves(leavesCommand.getLeaves());
         leavesEmployeeDto.setEmployeeId((leavesHistory.getEmployee()).getId());
+        leavesEmployeeDto.setStartLeavesDate(leavesHistory.getlDate());
+        leavesEmployeeDto.setExceedLeaves(leavesHistory.getLeaves());
+        LocalDate date = leavesHistory.getlDate();
+        LocalDate date2 = this.getBackToWorkDate(date,leavesCommand.getLeaves());
+        leavesEmployeeDto.setBackToWorkDate(date2);
         return leavesEmployeeDto ;
+    }
+
+    private LocalDate getBackToWorkDate(LocalDate date, Integer leaves) {
+        LocalDate date1 = date.plusDays(leaves);
+        for (int i = 0; i < leaves; i++) {
+            DayOfWeek dayOfWeek = date.getDayOfWeek();
+            if (dayOfWeek == DayOfWeek.FRIDAY || dayOfWeek == DayOfWeek.SATURDAY) {
+                date1 = date1.plusDays(1);
+                leaves++;
+            }
+            date=date.plusDays(1);
+        }
+        return date1;
     }
 }

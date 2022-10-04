@@ -60,7 +60,7 @@ public class CalculateSalary {
     private Double calculateExceeded(Double grossSalary, Salary salary, Double grossAfterTaxesAndInsurance) {
         Integer exceeded = salary.getExceededLeaves();
         Double money = (grossSalary/22)*exceeded;
-        money = grossAfterTaxesAndInsurance + money;
+        money = grossAfterTaxesAndInsurance - money;
         return money;
     }
 

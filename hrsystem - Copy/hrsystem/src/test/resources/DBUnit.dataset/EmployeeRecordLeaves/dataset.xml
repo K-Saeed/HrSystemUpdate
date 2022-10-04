@@ -4,7 +4,7 @@
     <TEAM id="1" tname="hr" />
     <EMPLOYEE id ="20" fName="khaled" lName="saeed"   nationalId="2021456" birth_Date="1996-08-01"
               graduation_Date="2020-09-01" start_Work_Date="2022-09-01"  gross_Sallary="10000" leaves="30" department_Id="1" team_Id="1" />
-    <LEAVES_HISTORY  l_date="2022-10-03" leaves = "3" employee_id="20" />
-    <LEAVES_HISTORY  l_date="2022-10-20" leaves = "3" employee_id="20" />
+    <LEAVES_HISTORY  l_date="2022-10-03" leaves = "15" employee_id="20" />
+    <LEAVES_HISTORY  l_date="2022-10-20" leaves = "15" employee_id="20" />
 </dataset>
 
