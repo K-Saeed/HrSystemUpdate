@@ -27,7 +27,6 @@ public class EmployeeService {
     private TeamRepository teamRepository;
     private EmployeeMapper employeeMapper;
     private SalaryRepository salaryRepository;
-    private InsuranceRepository insuranceRepository ;
     private LeavesHistoryRepository leavesHistoryRepository;
 
 

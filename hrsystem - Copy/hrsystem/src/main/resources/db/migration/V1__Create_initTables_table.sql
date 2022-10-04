@@ -31,34 +31,7 @@ experties varchar (250) not null ,
 employee_Id int not null ,
 foreign key (employee_Id) references employee (id)
 );
-alter table employee
-  add leaves int
-  after gross_Sallary;
 
-create table salary(
-id int not null auto_increment primary key ,
-s_date date not null ,
-exceeded_leaves int ,
-taxes int ,
-insurance int ,
-raises int ,
-bonus int ,
-net_salary int ,
-employee_id int not null ,
-foreign key (employee_id) references employee (id)
-);
 
-create table insurance (
-id int not null auto_increment primary key ,
-leaves_year int not null ,
-insurance_years int not null,
-employee_id int not null ,
-foreign key (employee_id) references employee (id)
-);
-create table leaves_history (
-id int not null auto_increment primary key ,
-l_date date not null ,
-leaves_total int not null ,
-employee_id int not null ,
-foreign key (employee_id) references employee (id)
-);
+
+

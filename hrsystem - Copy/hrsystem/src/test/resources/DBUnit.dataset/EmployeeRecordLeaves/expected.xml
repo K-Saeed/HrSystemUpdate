@@ -3,7 +3,5 @@
     <DEPARTMENT id="1" dname="software"  />
     <TEAM id="1" tname="hr" />
     <EMPLOYEE id ="20" fName="khaled" lName="saeed" nationalId="2021456" birth_Date="1996-08-01"
-              graduation_Date="2020-09-01" start_Work_Date="2022-09-01"  gross_Sallary="10000" leaves="15" department_Id="1" team_Id="1" />
-    <SALARY id ="1" s_date="2022-09-28" exceeded_leaves = "5" taxes="250"  insurance ="500" raises="50" bonus ="10000"
-            net_salary = "10000" employee_id="20" />
+              graduation_Date="2020-09-01" start_Work_Date="2022-09-01"  gross_Sallary="10000" leaves="30" department_Id="1" team_Id="1" />
 </dataset>

@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 @Component
 public class CalculateSalary {
@@ -27,10 +28,10 @@ public class CalculateSalary {
             for (Employee employee : employees) {
                 Double grossSalary = employee.getGrossSallary();
                 Double grossAfterTaxesAndInsurance = this.calculateGrossWithOutTaxesAndInsurance(grossSalary);
-                LocalDate date = LocalDate.now();
+                Month month =Month.from(LocalDate.now());
                 Integer employeeId =employee.getId();
-                if (salaryRepository.findByDate(date,employeeId)!= null) {
-                    salary = salaryRepository.findByDate(LocalDate.now(), employee.getId());
+                if (salaryRepository.findByDate(month.getValue(),employeeId)!= null) {
+                    salary = salaryRepository.findByDate(month.getValue(), employee.getId());
                     salary.setTaxes((employee.getGrossSallary())*.15);
                     salary.setInsurance(500.0);
                     if (salary.getExceededLeaves()!=null){
@@ -40,7 +41,6 @@ public class CalculateSalary {
                         }
                     }else {
                         if (salary.getBonus()!=null){
-                           // salaryAfterExceeded = this.calculateExceeded(grossSalary,salary,grossAfterTaxesAndInsurance);
                             salaryAfterBonus=(salary.getBonus())+grossSalary;
                         }
                     }

@@ -2,6 +2,7 @@
 <dataset>
     <DEPARTMENT id="1" dname="software"  />
     <TEAM id="1" tname="hr" />
+
     <EMPLOYEE id ="20" fName="khaled" lName="saeed"   nationalId="2021456" birth_Date="1996-08-01"
               graduation_Date="2020-09-01" start_Work_Date="2022-09-01"  gross_Sallary="15000" department_Id="1" team_Id="1" />
     <EMPLOYEE id="21" fName="khaled" lName="saeed" nationalId="455665" birth_Date="1999-08-01"
@@ -10,7 +11,8 @@
               graduation_Date="1999-08-01" start_Work_Date="1999-08-01"  gross_Sallary="3000" department_Id="1" team_Id="1" manager_Id="20" />
     <EMPLOYEE id="23" fName="ahmed" lName="ali" nationalId="20524879" birth_Date="1999-08-01"
               graduation_Date="1999-08-01" start_Work_Date="1999-08-01"  gross_Sallary="3000" department_Id="1" team_Id="1" manager_Id="20" />
-    <SALARY id ="1" s_date="2022-10-02"  raises="500" employee_id="20" />
-    <SALARY id ="2" s_date="2022-10-02"  bonus ="250" employee_id="21" />
-    <SALARY id ="3" s_date="2022-10-02" exceeded_leaves = "-3" raises="500" bonus ="250" employee_id="22" />
+
+    <SALARY id ="1" s_date="2022-10-03"  raises="500" employee_id="20" />
+    <SALARY id ="2" s_date="2022-10-03"  bonus ="250" employee_id="21" />
+    <SALARY id ="3" s_date="2022-10-03" exceeded_leaves = "-3" raises="500" bonus ="250" employee_id="22" />
 </dataset>

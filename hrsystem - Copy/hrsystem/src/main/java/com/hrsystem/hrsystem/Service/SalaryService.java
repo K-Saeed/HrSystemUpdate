@@ -3,18 +3,17 @@ package com.hrsystem.hrsystem.Service;
 import com.hrsystem.hrsystem.Service.calculatesalary.CalculateSalary;
 import com.hrsystem.hrsystem.Service.mapper.EmployeeMapper;
 import com.hrsystem.hrsystem.entity.Employee;
-import com.hrsystem.hrsystem.entity.Insurance;
-import com.hrsystem.hrsystem.entity.LeavesHistory;
 import com.hrsystem.hrsystem.entity.Salary;
-import com.hrsystem.hrsystem.entity.command.InsuranceCommand;
-import com.hrsystem.hrsystem.entity.command.LeavesCommand;
-import com.hrsystem.hrsystem.entity.dto.*;
+import com.hrsystem.hrsystem.entity.dto.BonusEmployeeDto;
+import com.hrsystem.hrsystem.entity.dto.RaisesEmployeeDto;
+import com.hrsystem.hrsystem.entity.dto.SalaryDto;
 import com.hrsystem.hrsystem.repostiory.*;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +22,8 @@ import java.util.List;
 @EnableScheduling
 public class SalaryService {
     private EmployeeRepository employeeRepository;
-    private TeamRepository teamRepository;
     private EmployeeMapper employeeMapper;
     private SalaryRepository salaryRepository;
-    private InsuranceRepository insuranceRepository ;
-    private LeavesHistoryRepository leavesHistoryRepository;
     private CalculateSalary calculateSalary ;
     public Iterable<SalaryDto> getSalaryHistoryOfEmployee(Integer employeeId) throws Exception {
         if (employeeRepository.findById(employeeId)!= null) {
@@ -40,82 +36,43 @@ public class SalaryService {
         }else throw new Exception();
     }
 
-    public LeavesEmployeeDto recordEmployeeLeaves(Integer employeeid, LeavesCommand leavesCommand) throws Exception {
-        if (employeeRepository.findById(employeeid).get() != null) {
-            Employee employee = employeeRepository.findById(employeeid).get();
-            Integer calcLeaves = this.calculateEmployeeLeaves(employee, leavesCommand);
-            this.setLeavesHistory(calcLeaves,employee);
-            if (calcLeaves > 0) {
-                employee.setLeaves(calcLeaves);
-                employeeRepository.save(employee);
-                return employeeMapper.convertEmployeeToLeavesDto(employee);
 
-            }else {
-                LocalDate date = LocalDate.now();
-                if (salaryRepository.findByDate(date,employeeid)!= null){
-                    Salary salary = salaryRepository.findByDate(date,employeeid);
-                    salary.setExceededLeaves(calcLeaves);
-                    employee.setLeaves(0);
-                    return employeeMapper.convertEmployeeToLeavesDto(employee);
-                }else {
-                    Salary salary = new Salary();
-                    salary.setExceededLeaves(calcLeaves);
-                    salary.setEmployee(employee);
-                    salary.setsDate(LocalDate.now());
-                    salaryRepository.save(salary);
-                    employee.setLeaves(0);
-                    salary.setEmployee(employee);
-                    return employeeMapper.convertEmployeeToLeavesDto(employee);
-                }
-            }
-
-        } else
-            throw new Exception("Id Not Found : " + employeeid);
-    }
-
-    private void setLeavesHistory(Integer calcLeaves, Employee employee) {
-        LeavesHistory leavesHistory = new LeavesHistory();
-        leavesHistory.setLeavesTotal(calcLeaves);
-        leavesHistory.setEmployee(employee);
-        leavesHistory.setlDate(LocalDate.now());
-        leavesHistoryRepository.save(leavesHistory);
-    }
-    private Integer calculateEmployeeLeaves(Employee employee, LeavesCommand leavesCommand) {
-        Integer leaves = employee.getLeaves();
-        Integer leaves2 = leavesCommand.getLeaves();
-        Integer leavesUp = leaves-leaves2;
-        return leavesUp;
-    }
-
-    public InsuranceDto setEmployeeLeaves(InsuranceCommand insuranceCommand) {
-        Insurance insurance = employeeMapper.convertInsuranceCommandToEntity(insuranceCommand);
-        insuranceRepository.save(insurance);
-        return employeeMapper.convertInsuranceEntitToDto(insurance);
-    }
     public BonusEmployeeDto recordEmployeeBonus(Integer employeeId) throws Exception {
         Salary salary = new Salary();
         BonusEmployeeDto bonusEmployeeDto = new BonusEmployeeDto();
-        if (employeeRepository.findById(employeeId).get() != null) {
-            Employee employee = employeeRepository.findById(employeeId).get();
-            Double calcBonus = this.calculateEmployeeBonus(employee);
-            LocalDate date = LocalDate.now();
-            if (salaryRepository.findByDate(date, employeeId) != null) {
-                salary = salaryRepository.findByDate(date, employeeId);
-                salary.setBonus(calcBonus);
-                bonusEmployeeDto.setBonus(calcBonus);
-                return bonusEmployeeDto;
-            } else{
-                salary.setBonus(calcBonus);
-                salary.setsDate(LocalDate.now());
-                salary.setEmployee(employee);
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow();
+        Double calcBonus = this.calculateEmployeeBonus(employee);
+        Month month = Month.from(LocalDate.now());
+        if (salaryRepository.findByDate(month.getValue(), employeeId) != null) {
+            salary = salaryRepository.findByDate(month.getValue(), employeeId);
+            if (salary.getBonus()==null) {
+                salary = this.setSalary(calcBonus,employee);
                 salaryRepository.save(salary);
                 bonusEmployeeDto.setBonus(calcBonus);
-                return bonusEmployeeDto ;
-
+                return bonusEmployeeDto;
+            }else {
+                Double newBonus = salary.getBonus()+calcBonus;
+                salary = this.setSalary(newBonus,employee);
+                salaryRepository.save(salary);
+                bonusEmployeeDto.setBonus(newBonus);
+                return bonusEmployeeDto;
             }
+        } else {
+            salary = this.setSalary(calcBonus,employee);
+            salaryRepository.save(salary);
+            bonusEmployeeDto.setBonus(calcBonus);
+            return bonusEmployeeDto;
+        }
 
-        } else throw new Exception("Id Not Found : " + employeeId);
 
+    }
+
+    private Salary setSalary(Double calcBonus, Employee employee) {
+        Salary salary = new Salary();
+        salary.setBonus(calcBonus);
+        salary.setEmployee(employee);
+        salary.setsDate(LocalDate.now());
+        return salary;
     }
 
     private Double calculateEmployeeBonus(Employee employee) {
@@ -128,9 +85,9 @@ public class SalaryService {
         if (employeeRepository.findById(employeeId).get() != null) {
             Employee employee = employeeRepository.findById(employeeId).get();
             Double calcRaises = this.calculateEmployeeRaises(employee);
-            LocalDate date = LocalDate.now();
-            if (salaryRepository.findByDate(date, employeeId) != null) {
-                salary = salaryRepository.findByDate(date, employeeId);
+            Month month =Month.from(LocalDate.now());
+            if (salaryRepository.findByDate(month.getValue(), employeeId) != null) {
+                salary = salaryRepository.findByDate(month.getValue(), employeeId);
                 salary.setRaises(calcRaises);
                 employee.setGrossSallary(calcRaises);
                 raisesEmployeeDto.setRaises(calcRaises);

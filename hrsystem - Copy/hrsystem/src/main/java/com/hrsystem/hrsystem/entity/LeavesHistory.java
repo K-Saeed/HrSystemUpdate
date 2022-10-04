@@ -9,7 +9,7 @@ public class LeavesHistory {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer leavesTotal;
+    private Integer leaves;
     private LocalDate lDate;
 
     @ManyToOne
@@ -20,18 +20,18 @@ public class LeavesHistory {
     public LeavesHistory() {
     }
 
-    public LeavesHistory(Integer leavesTotal, LocalDate lDate, Employee employee) {
-        this.leavesTotal = leavesTotal;
+    public LeavesHistory(Integer leaves, LocalDate lDate, Employee employee) {
+        this.leaves = leaves;
         this.lDate = lDate;
         this.employee = employee;
     }
 
-    public Integer getLeavesTotal() {
-        return leavesTotal;
+    public Integer getLeaves() {
+        return leaves;
     }
 
-    public void setLeavesTotal(Integer leavesTotal) {
-        this.leavesTotal = leavesTotal;
+    public void setLeaves(Integer leaves) {
+        this.leaves = leaves;
     }
 
 
